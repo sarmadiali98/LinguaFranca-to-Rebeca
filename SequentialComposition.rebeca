@@ -1,0 +1,58 @@
+reactiveclass Node(100) {
+    knownrebecs {
+        Node next;
+    }
+
+    statevars {
+        int recievedMsg; //recieved message
+        int sentMsg; //sent message
+		byte netDelay;
+		boolean isfirst;
+		boolean islast;
+		boolean seqDone; //sequence is done
+    }
+    	
+    Node(boolean isFirst, boolean isLast) {
+    	isfirst = isFirst;
+    	islast = isLast;
+    	
+    	seqDone = false;
+    	netDelay = 0;
+        
+        if(isfirst){
+        	sentMsg = 5; //Initial Value
+        	self.sendMsg(sentMsg); //starting
+        }
+    }
+    
+    msgsrv sendMsg(int msg) {
+        next.rcvMsg(msg) after(netDelay);
+        self.seqDone = false;
+    }
+
+    msgsrv rcvMsg(int msg) {
+        recievedMsg = msg;
+        
+        sentMsg = recievedMsg * 2;
+        
+        if(islast) {
+        	self.sendMsg(1); //sequence is finished. Send ack to the first node.
+        }
+        
+        else if(isfirst) {
+        	self.seqDone = true; //Ack is recieved. sequence is done.
+        	self.sendMsg(sentMsg); //start another sequence.
+        }
+        
+        else {
+        	self.sendMsg(sentMsg); //Pass the duplicated value to the next node.
+        }
+    }
+}
+
+main {
+    Node node0(node1):(true, false);
+    Node node1(node2):(false, false);
+    Node node2(node3):(false, false);
+    Node node3(node0):(false, true);
+}

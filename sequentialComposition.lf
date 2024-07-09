@@ -1,0 +1,53 @@
+target Cpp
+
+reactor Node(isfirst: boolean(false), islast: boolean(false)) {
+
+    input recievedMsg: int;
+    output sentMsg: int;
+
+    state msg: int;
+    state seqDone: boolean;
+
+    logical action sendMsg(0);
+
+    reaction(startup) {=
+        seqDone.set(false);
+
+        if(isfirst) {
+            sentMsg.set(5);
+            sendMsg.schedule(0)
+        }
+    =}
+
+    reaction(sendMsg) {=
+        sentMsg.set(msg);
+        seqDone.set(false);
+    =}
+
+    reaction(recievedMsg) {=
+        msg = recievedMsg;
+
+        sentMsg.set(msg*2);
+
+        if(islast) {
+            sentMsg.set(1);
+        } else if (isfirst) {
+            seqDone.set(true);
+            sendMsg.schedule(0);
+        } else {
+            sendMsg.schedule(0);
+        }
+    =}
+}
+
+main reactor {
+    node0 = new Node(isfirst = true, islast = false);
+    node1 = new Node(isfirst = false, islast = false);
+    node2 = new Node(isfirst = false, islast = false);
+    node3 = new Node(isfirst = false, islast = true);
+
+    node0.sentMsg -> node1.recievedMsg;
+    node1.sentMsg -> node2.recievedMsg;
+    node2.sentMsg -> node3.recievedMsg;
+    node3.sentMsg -> node0.recievedMsg;
+}
