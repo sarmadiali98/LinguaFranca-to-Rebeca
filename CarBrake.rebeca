@@ -1,0 +1,78 @@
+reactiveclass Camera(10){
+	knownrebecs{
+		BrakingAssistant brakingassistant;
+	}
+	statevars{
+		int frame;
+	}
+	Camera(){
+		frame = 66;
+		self.sendFrame();
+	}
+	msgsrv sendFrame(){
+		brakingassistant.recieveframe(frame);
+		self.sendFrame() after(20);
+	}
+}
+
+reactiveclass BrakingAssistant(10){
+	knownrebecs{
+		Camera camera;
+		Brake brake;
+	}
+	statevars{
+		int counter;
+		int Frame;
+	}
+	BrakingAssistant(){
+		self.counter = 0;
+	}
+	msgsrv recieveframe(int frame){
+		self.Frame = frame;
+		if(counter % 10 == 0){
+			brake.trigger_brake();
+			self.counter = 0;
+		}
+		counter++;
+	}
+}
+
+reactiveclass BrakePedal(10){
+	knownrebecs{
+		Brake brake;
+	}
+	statevars{
+		boolean pedalpressed;
+	}
+	BrakePedal(){
+		self.pedalpressed = false;
+		self.pressingpedal() after(1000);
+	}
+	msgsrv pressingpedal(){
+		brake.trigger_brake();
+		self.pressingpedal() after(1000);
+	}
+}
+
+reactiveclass Brake(10){
+	knownrebecs{
+		BrakingAssistant brakingassistant;
+		BrakePedal brakepedal;
+	}
+	statevars{
+		boolean brakingnow;
+	}
+	Brake(){
+		brakingnow = false;
+	}
+	msgsrv trigger_brake(){
+		self.brakingnow = true;
+	}
+}
+
+main {
+	BrakingAssistant brakingassistant(camera, brake):();
+	Camera camera(brakingassistant):();
+	Brake brake(brakingassistant, brakepedal):();
+	BrakePedal brakepedal(brake):();
+}
