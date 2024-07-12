@@ -3,6 +3,7 @@ Welcome to the Lingua Franca to Rebeca Verification Repository! This repository 
 
 ## Sequential Composition
 This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a reactive system composed of nodes that communicate in a sequence. Each node in the system can send and receive messages, and the first node initiates the communication with a predefined message. As messages are received, they are processed and forwarded to the next node, with the value being doubled at each step. When the last node in the sequence receives a message, it sends an acknowledgment back to the first node, completing the sequence. The models illustrate how such a system can be described in both Rebeca and Lingua Franca, providing a clear comparison for verification and educational purposes. The main reactor in both languages sets up a loop of nodes, ensuring continuous message passing and sequence execution.
+
 <img width="794" alt="image" src="https://github.com/user-attachments/assets/3e04fccd-1c94-4a9d-a808-c714ca199341">
 
 
