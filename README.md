@@ -30,6 +30,7 @@ This repository contains a Rebeca model and its equivalent in Lingua Franca, ill
 This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a simple communication system where two senders periodically transmit messages to a single receiver. In Rebeca, the Sender components send a message with a fixed value to the Reciever component after a defined network delay and period. The Reciever captures and stores the received message.
 
 In Lingua Franca, due to the limitation that prevents connecting multiple inputs to the same port, the Reciever component is designed with two separate input ports. Each Sender component sends its message to a distinct port on the Reciever. This adjustment ensures that the system behaves as intended, with both senders successfully communicating with the single receiver. These models demonstrate how similar reactive systems can be implemented in both Rebeca and Lingua Franca, providing a basis for comparison and understanding of reactive programming concepts.
+
 <img width="746" alt="Screenshot 2024-07-15 at 6 13 23 PM" src="https://github.com/user-attachments/assets/e437150e-1b74-4392-a9b0-324ed487a53b">
 
 
