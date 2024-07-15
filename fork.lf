@@ -1,0 +1,43 @@
+target Cpp
+
+reactor Sender(myPeriod: time(1 sec)) {
+
+    output msg1: int;
+    output msg2: int;
+
+    state period: time;
+    state msg: int;
+    logical action sendMsg(0);
+
+    reaction(startup) {=
+        period = myPeriod;
+        msg = 24;
+        sendMsg.schedule(0);
+    =}
+
+    reaction(sendMsg) -> msg1, msg2 {=
+        msg1.set(msg);
+        msg2.set(msg);
+        sendMsg.schedule(period);
+    =}
+}
+
+reactor Reciever {
+    input rcvMsg: int;
+
+    state receivedMessage: int;
+
+    reaction(rcvMsg) {=
+        receivedMessage = rcvMsg;
+    =}
+}
+
+main reactor {
+    reciever1 = new Reciever();
+    reciever2 = new Reciever();
+
+    sender1 = new Sender(myPeriod = 1 sec);
+
+    sender1.msg1 -> reciever1.rcvMsg;
+    sender1.msg2 -> reciever2.rcvMsg;
+}
