@@ -1,0 +1,168 @@
+target Cpp;
+
+reactor ResourceManager {
+    input update1: bool;
+    input update2: bool;
+    input update3: bool;
+    input update4: bool;
+    output checkQueueOut: void;
+    output runJob1: int;
+    output runJob2: int;
+    output runJob3: int;
+    output runJob4: int;
+    input ttt: time;
+
+    state FREE: int(1);
+    state BUSY: int(0);
+    state appMaster1: int(1);
+    state appMaster2: int(1);
+    state appMaster3: int(1);
+    state appMaster4: int(1);
+    state m_queue_misses: int(0);
+    state m_update_miss: int(0);
+    state m_job_complete: int(0);
+    state fifo_queue: {= int[5] = {5, 5, 5, 5, 5} =}; // initialize array
+    state DEFAULT_DEADLINE: int(5);
+    state QUEUE_SIZE: int(5);
+
+    timer t(0, 1 sec);
+
+    reaction(startup) {=
+        self->appMaster1 = self->FREE;
+        self->appMaster2 = self->FREE;
+        self->appMaster3 = self->FREE;
+        self->appMaster4 = self->FREE;
+        self->m_queue_misses = 0;
+        self->m_update_miss = 0;
+        self->m_job_complete = 0;
+        for (int i = 0; i < self->QUEUE_SIZE; i++) {
+            self->fifo_queue[i] = self->DEFAULT_DEADLINE;
+        }
+    =}
+
+    reaction(t, ttt) -> runJob1, runJob2, runJob3, runJob4, checkQueueOut {=
+        self->m_queue_misses = 0;
+        self->m_update_miss = 0;
+        self->m_job_complete = 0;
+        int I = 0;
+
+        if (self->appMaster1 == self->FREE) {
+            self->appMaster1 = self->BUSY;
+            lf_set(runJob1, self->fifo_queue[0]);
+            for (I = 0; I < self->QUEUE_SIZE - 1; I++) {
+                self->fifo_queue[I] = self->fifo_queue[I + 1];
+            }
+            self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+        }
+
+        if (self->appMaster2 == self->FREE) {
+            self->appMaster2 = self->BUSY;
+            lf_set(runJob2, self->fifo_queue[0]);
+            for (I = 0; I < self->QUEUE_SIZE - 1; I++) {
+                self->fifo_queue[I] = self->fifo_queue[I + 1];
+            }
+            self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+        }
+
+        if (self->appMaster3 == self->FREE) {
+            self->appMaster3 = self->BUSY;
+            lf_set(runJob3, self->fifo_queue[0]);
+            for (I = 0; I < self->QUEUE_SIZE - 1; I++) {
+                self->fifo_queue[I] = self->fifo_queue[I + 1];
+            }
+            self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+        }
+
+        if (self->appMaster4 == self->FREE) {
+            self->appMaster4 = self->BUSY;
+            lf_set(runJob4, self->fifo_queue[0]);
+            for (I = 0; I < self->QUEUE_SIZE - 1; I++) {
+                self->fifo_queue[I] = self->fifo_queue[I + 1];
+            }
+            self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+        }
+
+        for (I = 0; I < self->QUEUE_SIZE; I++) {
+            self->fifo_queue[I]--;
+            if (self->fifo_queue[I] == 0) {
+                self->m_queue_misses++;
+                for (int J = I; J < self->QUEUE_SIZE - 1; J++) {
+                    self->fifo_queue[J] = self->fifo_queue[J + 1];
+                }
+                self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+            }
+        }
+
+        lf_set(checkQueueOut); // Continue checking the queue
+    =}
+
+    reaction(update1, update2, update3, update4) {=
+        self->m_queue_misses = 0;
+        self->m_update_miss = 0;
+        self->m_job_complete = 0;
+
+        bool deadline_miss = false;
+        if (update1->is_present) {
+            deadline_miss = update1->value;
+            self->appMaster1 = self->FREE;
+        } else if (update2->is_present) {
+            deadline_miss = update2->value;
+            self->appMaster2 = self->FREE;
+        } else if (update3->is_present) {
+            deadline_miss = update3->value;
+            self->appMaster3 = self->FREE;
+        } else if (update4->is_present) {
+            deadline_miss = update4->value;
+            self->appMaster4 = self->FREE;
+        }
+
+        if (deadline_miss) {
+            self->m_update_miss = 1;
+        } else {
+            self->m_job_complete = 1;
+        }
+    =}
+}
+
+reactor AppMaster {
+    input runJob: int;
+    output update: bool;
+
+    state doneJobs: int(0);
+
+    reaction(runJob) -> update {=
+        int dline = runJob->value;
+        int completion = 2; // This can be changed
+        bool deadline_miss;
+
+        if (completion > dline) {
+            deadline_miss = true;
+            lf_schedule(update, MSEC(dline), &deadline_miss);
+        } else {
+            deadline_miss = false;
+            lf_schedule(update, MSEC(completion), &deadline_miss);
+            self->doneJobs++;
+            if (self->doneJobs > 5) {
+                self->doneJobs = 1;
+            }
+        }
+    =}
+}
+
+main reactor {
+    rm = new ResourceManager();
+    am1 = new AppMaster();
+    am2 = new AppMaster();
+    am3 = new AppMaster();
+    am4 = new AppMaster();
+
+    rm.runJob1 -> am1.runJob;
+    rm.runJob2 -> am2.runJob;
+    rm.runJob3 -> am3.runJob;
+    rm.runJob4 -> am4.runJob;
+    am1.update -> rm.update1;
+    am2.update -> rm.update2;
+    am3.update -> rm.update3;
+    am4.update -> rm.update4;
+    rm.checkQueueOut -> rm.ttt;
+}

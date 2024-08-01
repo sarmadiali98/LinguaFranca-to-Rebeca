@@ -1,0 +1,107 @@
+target Cpp;
+
+reactor ResourceManager {
+    input update: bool;
+    output checkQueueOut: void;
+    output runJob: int;
+    input ttt:time;
+
+
+    state FREE: int(1);
+    state BUSY: int(0);
+    state appMaster1: int(1);
+    state m_queue_misses: int(0);
+    state m_update_miss: int(0);
+    state m_job_complete: int(0);
+    state fifo_queue: {= int[2] = {3, 3} =}; // initialize array
+    state DEFAULT_DEADLINE: int(3);
+    state QUEUE_SIZE: int(2);
+
+    timer t(0, 1 sec);
+
+    reaction(startup) {=
+        self->appMaster1 = FREE;
+        self->m_queue_misses = 0;
+        self->m_update_miss = 0;
+        self->m_job_complete = 0;
+        self->fifo_queue[0] = self->DEFAULT_DEADLINE;
+        self->fifo_queue[1] = self->DEFAULT_DEADLINE;
+    =}
+
+    reaction(t, ttt) -> runJob, checkQueueOut {=
+        self->m_queue_misses = 0;
+        self->m_update_miss = 0;
+        self->m_job_complete = 0;
+        int I = 0;
+
+        if (self->appMaster1 == self->FREE) {
+            self->appMaster1 = self->BUSY;
+            lf_set(runJob, self->fifo_queue[0]);
+            for (I = 0; I < self->QUEUE_SIZE - 1; I++) {
+                self->fifo_queue[I] = self->fifo_queue[I + 1];
+            }
+            self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+        }
+
+        for (I = 0; I < self->QUEUE_SIZE; I++) {
+            self->fifo_queue[I]--;
+            if (self->fifo_queue[I] == 0) {
+                self->m_queue_misses++;
+                for (int J = I; J < self->QUEUE_SIZE - 1; J++) {
+                    self->fifo_queue[J] = self->fifo_queue[J + 1];
+                }
+                self->fifo_queue[self->QUEUE_SIZE - 1] = self->DEFAULT_DEADLINE;
+            }
+        }
+
+        lf_set(checkQueueOut); // Continue checking the queue
+    =}
+
+    reaction(update) {=
+        self->m_queue_misses = 0;
+        self->m_update_miss = 0;
+        self->m_job_complete = 0;
+
+        if (update->value) {
+            self->m_update_miss = 1;
+        } else {
+            self->m_job_complete = 1;
+        }
+
+        self->appMaster1 = self->FREE;
+    =}
+}
+
+reactor AppMaster {
+    input runJob: int;
+    output update: bool;
+
+    state doneJobs: int(0);
+
+    reaction(runJob) -> update {=
+        int dline = runJob->value;
+        int completion = 2; // This can be changed
+        bool deadline_miss;
+
+        if (completion > dline) {
+            deadline_miss = true;
+            lf_schedule(update, dline, &deadline_miss);
+        } else {
+            deadline_miss = false;
+            lf_schedule(update, completion, &deadline_miss);
+            self->doneJobs++;
+            if (self->doneJobs > 5) {
+                self->doneJobs = 1;
+            }
+        }
+    =}
+}
+
+main reactor {
+    rm = new ResourceManager();
+    am1 = new AppMaster();
+
+    rm.runJob -> am1.runJob;
+    am1.update -> rm.update;
+    rm.checkQueueOut -> rm.ttt;
+}

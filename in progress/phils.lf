@@ -1,0 +1,130 @@
+target Cpp;
+
+reactor Philosopher {
+    input permitL: void;
+    input permitR: void;
+    output requestForkL: void;
+    output requestForkR: void;
+    output releaseForkL: void;
+    output releaseForkR: void;
+
+    state eating: bool(false);
+    state fL: bool(false);
+    state fR: bool(false);
+
+    reaction(startup) {=
+        self->fL = false;
+        self->fR = false;
+        self->eating = false;
+        lf_set(requestForkL);
+    =}
+
+    reaction(permitL) -> requestForkR {=
+        if (!self->fL) {
+            self->fL = true;
+            lf_set(requestForkR);
+        }
+    =}
+
+    reaction(permitR) {=
+        if (self->fL && !self->fR) {
+            self->fR = true;
+            self->eating = true;
+            self->fL = false;
+            self->fR = false;
+            self->eating = false;
+            lf_set(releaseForkL);
+            lf_set(releaseForkR);
+            lf_set(requestForkL);
+        }
+    =}
+}
+
+reactor Fork {
+    input requestL: void;
+    input requestR: void;
+    input releaseL: void;
+    input releaseR: void;
+    output permitL: void;
+    output permitR: void;
+
+    state lAssign: bool(false);
+    state rAssign: bool(false);
+    state leftReq: bool(false);
+    state rightReq: bool(false);
+
+    reaction(requestL) {=
+        if (!self->leftReq) {
+            self->leftReq = true;
+            if (!self->rAssign) {
+                self->lAssign = true;
+                lf_set(permitL);
+            }
+        }
+    =}
+
+    reaction(requestR) {=
+        if (!self->rightReq) {
+            self->rightReq = true;
+            if (!self->lAssign) {
+                self->rAssign = true;
+                lf_set(permitR);
+            }
+        }
+    =}
+
+    reaction(releaseL) {=
+        if (self->lAssign) {
+            self->leftReq = false;
+            self->lAssign = false;
+            if (self->rightReq) {
+                self->rAssign = true;
+                lf_set(permitR);
+            }
+        }
+    =}
+
+    reaction(releaseR) {=
+        if (self->rAssign) {
+            self->rightReq = false;
+            self->rAssign = false;
+            if (self->leftReq) {
+                self->lAssign = true;
+                lf_set(permitL);
+            }
+        }
+    =}
+}
+
+main reactor {
+    p0 = new Philosopher();
+    p1 = new Philosopher();
+    p2 = new Philosopher();
+    f0 = new Fork();
+    f1 = new Fork();
+    f2 = new Fork();
+
+    // Philosopher 0 connections
+    p0.requestForkL -> f0.requestL;
+    p0.requestForkR -> f2.requestR;
+    p0.releaseForkL -> f0.releaseL;
+    p0.releaseForkR -> f2.releaseR;
+    f0.permitL -> p0.permitL;
+    f2.permitR -> p0.permitR;
+
+    // Philosopher 1 connections
+    p1.requestForkL -> f0.requestR;
+    p1.requestForkR -> f1.requestL;
+    p1.releaseForkL -> f0.releaseR;
+    p1.releaseForkR -> f1.releaseL;
+    f0.permitR -> p1.permitL;
+    f1.permitL -> p1.permitR;
+
+    // Philosopher 2 connections
+    p2.requestForkL -> f1.requestR;
+    p2.requestForkR -> f2.requestL;
+    p2.releaseForkL -> f1.releaseR;
+    p2.releaseForkR -> f2.releaseL;
+    f1.permitR -> p2.permitL;
+    f2.permitL -> p2.permitR;
+}

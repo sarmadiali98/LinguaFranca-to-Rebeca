@@ -1,0 +1,51 @@
+target Cpp;
+
+reactor CustomerReactor(customer_id: int(1)) {
+    input ticketIssued: int;
+    output tryTicket: int;
+
+    reaction(startup) {=
+        lf_set(tryTicket, customer_id);
+    =}
+
+    reaction(ticketIssued) {=
+        lf_set(tryTicket, customer_id);
+    =}
+}
+
+reactor AgentReactor {
+    input requestTicket: int;
+    input ticketIssued: int;
+    output requestToTS: int;
+    output issuedToC1: int;
+
+    reaction(requestTicket) -> requestToTS {=
+        lf_set(requestToTS, requestTicket);
+    =} deadline(200 msec) {= =}
+
+    reaction(ticketIssued) -> issuedToC1 {=
+        if (ticketIssued == 1) {
+            lf_set(issuedToC1, 1);
+        }
+    =}
+}
+
+reactor TicketServiceReactor(issueDelay: time(1s)) {
+    input requestTicket: int;
+    output ticketIssued: int;
+
+    reaction(requestTicket) -> ticketIssued {=
+        lf_set(ticketIssued, requestTicket);
+    =};
+}
+
+main reactor {
+    ts = new TicketServiceReactor(issueDelay = 4 sec);
+    a = new AgentReactor();
+    c1 = new CustomerReactor(customer_id = 1);
+
+    c1.tryTicket -> a.requestTicket;
+    a.requestToTS -> ts.requestTicket;
+    ts.ticketIssued -> a.ticketIssued;
+    a.issuedToC1 -> c1.ticketIssued;
+}

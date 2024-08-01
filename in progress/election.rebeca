@@ -1,0 +1,34 @@
+reactiveclass Node(100) {
+    knownrebecs {
+        Node next;
+    }
+    
+    statevars {
+        int id;
+        boolean elected;
+    }
+    
+    Node(int myId) {
+        id = myId;
+        elected = false;
+        self.init();
+    }
+    
+    msgsrv init() {
+        next.receiveId(id) after(0);
+    }
+    
+    msgsrv receiveId(int receivedId) {
+        if (receivedId > id) {
+            next.receiveId(receivedId) after(10);
+        } else if (receivedId == id) {
+            elected = true;
+        }
+    }
+}
+
+main {
+    Node node0(node1):(0);
+    Node node1(node2):(1);
+    Node node2(node0):(2);
+}

@@ -1,0 +1,43 @@
+reactiveclass Sender(100) {
+    knownrebecs {
+        Reciever recv1;
+        Reciever recv2;
+    }
+
+    statevars {
+        int period;
+		byte netDelay;
+    }
+    	
+    Sender(int myPeriod) {
+        period = myPeriod;
+        self.sendMsg();
+		netDelay = 1;
+    }
+    
+    msgsrv sendMsg() {
+        int msg;
+        msg = 24;
+        recv1.rcvMsg(msg) after(netDelay);
+        recv2.rcvMsg(msg) after(netDelay);
+        self.sendMsg() after(period);
+    }
+}
+
+reactiveclass Reciever(100) {
+	
+	statevars {
+		int recievedMessage;
+	}
+	
+	msgsrv rcvMsg(int msg) {
+		recievedMessage = msg;
+	}
+}
+
+main {
+	Reciever reciever1():();
+	Reciever reciever2():();
+	
+    Sender sender1(reciever1, reciever2):(1);
+}
