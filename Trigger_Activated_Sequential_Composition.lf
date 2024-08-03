@@ -28,7 +28,7 @@ reactor Node(isfirst: boolean(false), islast: boolean(false)) {
     reaction(recievedMsg) {=
         msg = recievedMsg;
 
-        sentMsg.set(msg*2);
+        sentMsg.set(msg);
 
         if(islast) {
             sentMsg.set(1);
