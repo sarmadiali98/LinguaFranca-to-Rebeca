@@ -14,9 +14,10 @@ This is the same as trigger-activated sequential composition, except that the ac
 <img width="929" alt="image" src="https://github.com/user-attachments/assets/1d2f7a10-92db-4cce-81ae-91acfa4b80c8">
 
 
-## Circular Network
+## Periodic Circular Composition
 This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a reactive system where nodes periodically send a fixed message to the next node in a loop. Each node is configured with a specific period for sending messages and a network delay for message delivery. The first node initiates the communication cycle by sending a message with a predefined value. As each node receives a message, it simply records the received value and continues to send the same fixed message at its defined interval. The models illustrate how this periodic messaging system can be implemented in both Rebeca and Lingua Franca, providing a basis for verifying and understanding reactive system behaviors in different programming paradigms. The main reactor in both languages sets up a loop of nodes, ensuring continuous and periodic message passing.
-<img width="795" alt="image" src="https://github.com/user-attachments/assets/a811352c-da6b-411a-b0d4-cdf5c5783955">
+
+<img width="962" alt="image" src="https://github.com/user-attachments/assets/c0ece28e-47c9-4dfe-9cad-b1f1192d7563">
 
 
 ## Peer To Peer
