@@ -19,6 +19,11 @@ This repository contains a Rebeca model and its equivalent in Lingua Franca, dem
 
 <img width="962" alt="image" src="https://github.com/user-attachments/assets/c0ece28e-47c9-4dfe-9cad-b1f1192d7563">
 
+## Trigger Activated Circular Composition
+
+This is the same as trigger-activated circular composition, except that the action of sending a message is triggered by receiving a message from the previous node, instead of a timer every second.
+
+<img width="1051" alt="image" src="https://github.com/user-attachments/assets/f3d8d2b6-89ad-4991-8dea-6ee3e48501db">
 
 ## Peer To Peer
 This repository contains two models illustrating reactive systems in Rebeca and Lingua Franca. The first model demonstrates a simple reactive system where nodes communicate by sending and receiving messages that are doubled at each step. The first node initiates the communication with a value of 5, and each node sends the doubled message to the next node upon receiving it. The second model showcases a periodic message-passing system, where nodes send a fixed message at regular intervals defined by their period. Each node receives the message and continues the cycle. These models highlight how similar reactive systems can be expressed in Rebeca and Lingua Franca, providing a basis for comparison, verification, and educational purposes. The main reactors in both languages establish the connections between nodes, ensuring continuous communication in the network.
