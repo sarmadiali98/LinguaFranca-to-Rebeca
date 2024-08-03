@@ -2,9 +2,11 @@
 Welcome to the Lingua Franca to Rebeca Verification Repository! This repository is dedicated to showcasing and verifying the equivalence of models written in Lingua Franca (LF) and their corresponding counterparts in Rebeca. By providing side-by-side examples of LF code and its Rebeca translation, we aim to facilitate the understanding of how reactive systems can be modeled in these two languages. Feel free to explore the code examples, compare their functionalities, and use them as a reference for your own projects. Contributions and feedback are welcome to enhance the repository further.
 
 ## Sequential Composition
-This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a reactive system composed of nodes that communicate in a sequence. Each node in the system can send and receive messages, and the first node initiates the communication with a predefined message. As messages are received, they are processed and forwarded to the next node, with the value being doubled at each step. When the last node in the sequence receives a message, it sends an acknowledgment back to the first node, completing the sequence. The models illustrate how such a system can be described in both Rebeca and Lingua Franca, providing a clear comparison for verification and educational purposes. The main reactor in both languages sets up a loop of nodes, ensuring continuous message passing and sequence execution.
+This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a reactive system composed of nodes that communicate in a sequence. Each node in the system can send and receive messages, with the first node initiating communication with a predefined message. As messages are received, they are processed and forwarded to the next node. In the Rebeca model, when the last node in the sequence receives a message, it sends the same message to itself perpetually to avoid deadlock. This continuous self-message passing is necessary to maintain the flow, but it's not allowed in Lingua Franca since one output can't connect to more than one input.
 
-<img width="794" alt="image" src="https://github.com/user-attachments/assets/3e04fccd-1c94-4a9d-a808-c714ca199341">
+<img width="889" alt="image" src="https://github.com/user-attachments/assets/a50ed135-70ec-4dac-b1c4-60bf13d44d2c">
+<img width="889" alt="image" src="https://github.com/user-attachments/assets/cdb75fd6-9b38-4a23-9c74-a05a35c02fcb">
+
 
 
 ## Circular Network
