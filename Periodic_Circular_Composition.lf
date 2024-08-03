@@ -10,11 +10,11 @@ reactor Node(msg: int(0)) {
     logical action sendMsg(0);
     
     reaction(startup) -> sendMsg {=
-        sendMsg.set(1);
+        sendMsg.schedule(0);
     =}
 
     reaction(period) -> sentMsg {=
-        sendSsg.set(1)
+        sendMsg.schedule(0)
     =}
 
     reaction(sendMsg) {=
