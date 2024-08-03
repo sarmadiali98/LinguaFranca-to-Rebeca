@@ -4,7 +4,9 @@ Welcome to the Lingua Franca to Rebeca Verification Repository! This repository 
 ## Sequential Composition
 
 
-<img width="143" alt="image" src="https://github.com/user-attachments/assets/ea06c69b-e8c6-49d0-b936-b9d30f7eaff4"> This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a reactive system composed of nodes that communicate in a sequence. Each node in the system can send and receive messages, with the first node initiating communication with a predefined message. As messages are received, they are processed and forwarded to the next node. In the Rebeca model, when the last node in the sequence receives a message, it sends the same message to itself perpetually to avoid deadlock. This continuous self-message passing is necessary to maintain the flow, but it's not allowed in Lingua Franca since one output can't connect to more than one input.
+This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a reactive system composed of nodes that communicate in a sequence. Each node in the system can send and receive messages, with the first node initiating communication with a predefined message. As messages are received, they are processed and forwarded to the next node. In the Rebeca model, when the last node in the sequence receives a message, it sends the same message to itself perpetually to avoid deadlock. This continuous self-message passing is necessary to maintain the flow, but it's not allowed in Lingua Franca since one output can't connect to more than one input.
+
+<img width="143" alt="image" src="https://github.com/user-attachments/assets/ea06c69b-e8c6-49d0-b936-b9d30f7eaff4">
 <img width="852" alt="image" src="https://github.com/user-attachments/assets/7d89d168-4af6-4fa9-a32b-9e5c8d33c1f9">
 
 ## Circular Network
