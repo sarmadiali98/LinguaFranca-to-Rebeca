@@ -1,0 +1,35 @@
+target Cpp
+
+reactor Node {
+
+    input recievedMsg: int;
+    output sentMsg: int;
+
+    state msg: int;
+
+    logical action sendMsg(0);
+
+    reaction(startup) {=
+        if(isfirst) {
+            sentMsg.set(5);
+            sendMsg.schedule(0)
+        }
+    =}
+
+    reaction(sendMsg) {=
+        sentMsg.set(msg);
+    =}
+
+    reaction(recievedMsg) {=
+        msg = recievedMsg;
+        sentMsg.set(msg*2);
+    =}
+}
+
+main reactor {
+    node0 = new Node();
+    node1 = new Node();
+
+    node0.sentMsg -> node1.recievedMsg;
+    node1.sentMsg -> node0.recievedMsg;
+}
