@@ -1,0 +1,53 @@
+target Cpp
+
+reactor Sender(myPeriod: time(1 sec)) {
+
+    output msg1: int;
+    output msg2: int;
+    output msg3: int;
+    output msg4: int;
+    output msg5: int;
+
+    state msg: int;
+    logical action sendMsg(0);
+
+    timer period(0, 1 sec);
+
+    reaction(startup) {=
+        msg = 1;
+    =}
+
+    reaction(period) -> msg1, msg2, msg3, msg4, msg5 {=
+        msg1.set(msg);
+        msg2.set(msg);
+        msg3.set(msg);
+        msg4.set(msg);
+        msg5.set(msg);
+    =}
+}
+
+reactor Reciever {
+    input rcvMsg: int;
+
+    state receivedMessage: int;
+
+    reaction(rcvMsg) {=
+        receivedMessage = rcvMsg;
+    =}
+}
+
+main reactor {
+    reciever1 = new Reciever();
+    reciever2 = new Reciever();
+    reciever3 = new Reciever();
+    reciever4 = new Reciever();
+    reciever5 = new Reciever();
+
+    sender1 = new Sender(myPeriod = 1 sec);
+
+    sender1.msg1 -> reciever1.rcvMsg;
+    sender1.msg2 -> reciever2.rcvMsg;
+    sender1.msg3 -> reciever3.rcvMsg;
+    sender1.msg4 -> reciever4.rcvMsg;
+    sender1.msg5 -> reciever5.rcvMsg;
+}
