@@ -1,0 +1,70 @@
+reactiveclass Sender(100) {
+    knownrebecs {
+        Reciever recv1;
+        Reciever recv2;
+        Reciever recv3;
+        Reciever recv4;
+        Reciever recv5;
+    }
+
+    statevars {
+        int period;
+    }
+    	
+    Sender() {
+        period = 1;
+        self.sendMsg();
+    }
+    
+    msgsrv sendMsg() {
+        int msg;
+        msg = 1;
+        recv1.rcvMsg1(msg);
+        recv2.rcvMsg2(msg);
+        recv3.rcvMsg3(msg);
+        recv4.rcvMsg4(msg);
+        recv5.rcvMsg5(msg);
+        self.sendMsg() after(period);
+    }
+}
+
+reactiveclass Reciever(100) {
+	
+	statevars {
+		int recievedMessage1;
+		int recievedMessage2;
+		int recievedMessage3;
+		int recievedMessage4;
+		int recievedMessage5;
+	}
+	
+	msgsrv rcvMsg1(int msg) {
+		recievedMessage1 = msg;
+	}
+	
+	msgsrv rcvMsg2(int msg) {
+		recievedMessage2 = msg;
+	}
+	
+	msgsrv rcvMsg3(int msg) {
+		recievedMessage3 = msg;
+	}
+	
+	msgsrv rcvMsg4(int msg) {
+		recievedMessage4 = msg;
+	}
+	
+	msgsrv rcvMsg5(int msg) {
+		recievedMessage5 = msg;
+	}
+}
+
+main {
+    Sender sender1(reciever1, reciever2, reciever3, reciever4, reciever5):();
+    
+    Reciever reciever1():();
+    Reciever reciever2():();
+    Reciever reciever3():();
+    Reciever reciever4():();
+    Reciever reciever5():();
+}
