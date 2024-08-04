@@ -21,14 +21,22 @@ This repository contains a Rebeca model and its equivalent in Lingua Franca, dem
 
 ## Trigger Activated Circular Composition
 
-This is the same as trigger-activated circular composition, except that the action of sending a message is triggered by receiving a message from the previous node, instead of a timer every second.
+This is the same as periodic circular composition, except that the action of sending a message is triggered by receiving a message from the previous node, instead of a timer every second.
 
 <img width="1051" alt="image" src="https://github.com/user-attachments/assets/f3d8d2b6-89ad-4991-8dea-6ee3e48501db">
 
 ## Trigger-Activated Ping Pong
+
 This repository contains two models illustrating reactive systems in Rebeca and Lingua Franca. The first model demonstrates a simple reactive system where nodes communicate by sending and receiving messages. The first node initiates the communication with a value of 1, and each node sends the same message to the next node upon receiving it. The second model showcases the same message-passing system, where nodes send a fixed message upong being triggered. Each node receives the message and continues the cycle. These models highlight how similar reactive systems can be expressed in Rebeca and Lingua Franca, providing a basis for comparison, verification, and educational purposes. The main reactors in both languages establish the connections between nodes, ensuring continuous communication in the network.
 
 <img width="778" alt="image" src="https://github.com/user-attachments/assets/24f63060-2eb3-46a2-85ed-0534b51c54e7">
+
+## Periodic Ping Pong
+
+This is the same as trigger-activated Ping Pong, except that the action of sending a message is not triggered by receiving a message from the previous node, but rather by a timer every second.
+
+<img width="786" alt="image" src="https://github.com/user-attachments/assets/a17a3939-1084-4f73-8a75-60b669f2c48f">
+
 
 ## Car Brake
 This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a simplified automatic braking system in a car. The system comprises four main components: a Camera, Braking Assistant, Brake Pedal, and Brake. The Camera generates frames at regular intervals, which are processed by the Braking Assistant. Every tenth frame, the Braking Assistant triggers an automatic brake signal. Meanwhile, the Brake Pedal periodically simulates manual braking by sending a brake signal every second. Both automatic and manual brake signals are directed to the Brake component, which logs the activation and checks for deadlines to ensure timely responses. These models showcase how similar reactive systems can be modeled in Rebeca and Lingua Franca, facilitating a clear comparison and understanding of reactive programming concepts. The main reactors establish connections between components, ensuring coordinated operation of the braking system.
