@@ -1,0 +1,31 @@
+target Cpp
+
+reactor Node(msg: int(0)) {
+    input recievedMsg: int;
+    output sentMsg: int;
+
+    state msg: int;
+    timer period (0, 1 sec);
+
+    logical action sendMsg(0);
+    
+    reaction(startup) -> sendMsg {=
+        sendMsg.schedule(0);
+    =}
+
+    reaction(period) -> sentMsg {=
+        sendMsg.schedule(0)
+    =}
+
+    reaction(sendMsg) {=
+        msg.set(1);
+    =}
+}
+
+main reactor{
+    node0 = new Node();
+    node1 = new Node();
+
+    node0.sentMsg -> node1.recievedMsg;
+    node1.sentMsg -> node0.recievedMsg;
+}
