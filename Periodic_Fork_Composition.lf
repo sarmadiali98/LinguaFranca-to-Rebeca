@@ -1,6 +1,6 @@
 target Cpp
 
-reactor Sender(myPeriod: time(1 sec)) {
+reactor Sender {
 
     output msg1: int;
     output msg2: int;
@@ -43,7 +43,7 @@ main reactor {
     reciever4 = new Reciever();
     reciever5 = new Reciever();
 
-    sender1 = new Sender(myPeriod = 1 sec);
+    sender1 = new Sender();
 
     sender1.msg1 -> reciever1.rcvMsg;
     sender1.msg2 -> reciever2.rcvMsg;
