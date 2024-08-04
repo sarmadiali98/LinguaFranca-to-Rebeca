@@ -1,0 +1,29 @@
+reactiveclass Node(100) {
+    knownrebecs {
+        Node next;
+    }
+
+    statevars {
+        int recievedMsg;
+        int msg;
+    }
+    	
+    Node(int myPeriod) {
+        self.sendMsg();
+    }
+    
+    msgsrv sendMsg() {
+        msg = 1;
+        next.rcvMsg(msg);
+    }
+
+    msgsrv rcvMsg(int rcvdmsg) {
+        recievedMsg = rcvdmsg;
+        self.sendMsg();
+    }
+}
+
+main {
+    Node node0(node1):(1);
+    Node node1(node0):(2);
+}
