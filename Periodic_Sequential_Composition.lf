@@ -1,58 +1,41 @@
 target Cpp
 
-reactor Node(isfirst: boolean(false), islast: boolean(false)) {
+public preamble {=
+    #include <iostream>
+=}
+
+reactor Node(isfirst: bool = false, islast: bool = false, id: int = 0) {
 
     input recievedMsg: int;
     output sentMsg: int;
 
-    state msg: int;
-    state seqDone: boolean;
-    state period: time;
-
-    logical action sendMsg(0);
     timer period(0, 1 sec);
 
-    reaction(startup) {=
-        seqDone.set(false);
-        sentMsg.set(1);
-        sendMsg.schedule(0);
-        period = 1 sec;
-        prompt.schedule(period);
-    =}
-
-    reaction(sendMsg) {=
-        sentMsg.set(msg);
-        seqDone.set(false);
-    =}
-
     reaction(period) -> sentMsg {=
-        sentMsg.schedule(0);
+        if(isfirst){
+            sentMsg.set(1);
+            std::cout << "Message sent on first Node" << std::endl;
+        }
     =}
 
-    reaction(recievedMsg) {=
-        msg = recievedMsg;
-
-        sentMsg.set(msg);
-
+    reaction(recievedMsg) -> sentMsg {=
+        std::cout << "Message recieved on node: " << id << std::endl;
         if(islast) {
-            sentMsg.set(1);
-        } else if (isfirst) {
-            seqDone.set(true);
-            sendMsg.schedule(0);
+            std::cout << "Sequence is done" << std::endl;
         } else {
-            sendMsg.schedule(0);
+            sentMsg.set(1);
+            std::cout << "Message sent on node: " << id << std::endl;
         }
     =}
 }
 
 main reactor {
-    node0 = new Node(isfirst = true, islast = false);
-    node1 = new Node(isfirst = false, islast = false);
-    node2 = new Node(isfirst = false, islast = false);
-    node3 = new Node(isfirst = false, islast = true);
+    node0 = new Node(isfirst = true, islast = false, id = 1);
+    node1 = new Node(isfirst = false, islast = false, id = 2);
+    node2 = new Node(isfirst = false, islast = false, id = 3);
+    node3 = new Node(isfirst = false, islast = true, id = 4);
 
     node0.sentMsg -> node1.recievedMsg;
     node1.sentMsg -> node2.recievedMsg;
     node2.sentMsg -> node3.recievedMsg;
-    //node3.sentMsg -> node3.recievedMsg;
 }
