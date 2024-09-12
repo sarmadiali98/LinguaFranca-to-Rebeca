@@ -5,36 +5,25 @@ Welcome to the Lingua Franca to Rebeca Verification Repository! This repository 
 ![Trigger_Activated_Sequential_Composition](https://github.com/user-attachments/assets/bac0d89f-a5c7-46d8-bceb-ac8c2f06b951)
 
 ## Periodic Sequential Composition
-
 ![Periodic_Sequential_Composition](https://github.com/user-attachments/assets/a3c72dd0-1059-40d0-9436-214834044a37)
 
 ## Periodic Circular Composition
-
-<img width="962" alt="image" src="https://github.com/user-attachments/assets/c0ece28e-47c9-4dfe-9cad-b1f1192d7563">
+![Periodic_Circular_Composition](https://github.com/user-attachments/assets/40fbc054-e59a-4930-8b62-868834e0a020)
 
 ## Trigger Activated Circular Composition
-
-
-<img width="1051" alt="image" src="https://github.com/user-attachments/assets/f3d8d2b6-89ad-4991-8dea-6ee3e48501db">
+![Trigger_Activated_Circular_Composition](https://github.com/user-attachments/assets/20460668-48cc-4309-98ab-c96111125980)
 
 ## Trigger-Activated Ping Pong
-
-
-<img width="778" alt="image" src="https://github.com/user-attachments/assets/24f63060-2eb3-46a2-85ed-0534b51c54e7">
+![Trigger_Activated_PingPong](https://github.com/user-attachments/assets/89be335c-95f1-44dd-baac-73d6eaf3db1b)
 
 ## Periodic Ping Pong
-
-
-<img width="786" alt="image" src="https://github.com/user-attachments/assets/a17a3939-1084-4f73-8a75-60b669f2c48f">
+![Periodic_PingPong](https://github.com/user-attachments/assets/c8ce8ef2-6e77-402f-81fe-658c87c1c04c)
 
 ## Periodic Fork Composition
-
-<img width="620" alt="image" src="https://github.com/user-attachments/assets/c9588cf0-cc08-4171-b84d-99751f13e70b">
+![Periodic_Fork_Composition](https://github.com/user-attachments/assets/73cf1e8f-050d-4579-83b4-d594f78187f9)
 
 ## Periodic Join Composition
-
-
-<img width="467" alt="image" src="https://github.com/user-attachments/assets/f7a1da4e-91bc-457b-85e6-f6daeff46ce6">
+![Periodic_Join_Composition](https://github.com/user-attachments/assets/66279e94-8d19-4a57-ac7c-d3fc78d7f9a6)
 
 ## Car Brake
 This repository contains a Rebeca model and its equivalent in Lingua Franca, demonstrating a simplified automatic braking system in a car. The system comprises four main components: a Camera, Braking Assistant, Brake Pedal, and Brake. The Camera generates frames at regular intervals, which are processed by the Braking Assistant. Every tenth frame, the Braking Assistant triggers an automatic brake signal. Meanwhile, the Brake Pedal periodically simulates manual braking by sending a brake signal every second. Both automatic and manual brake signals are directed to the Brake component, which logs the activation and checks for deadlines to ensure timely responses. These models showcase how similar reactive systems can be modeled in Rebeca and Lingua Franca, facilitating a clear comparison and understanding of reactive programming concepts. The main reactors establish connections between components, ensuring coordinated operation of the braking system.
