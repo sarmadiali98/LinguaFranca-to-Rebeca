@@ -1,31 +1,56 @@
 target Cpp
 
-reactor Node(msg: int(0)) {
-    input recievedMsg: int;
-    output sentMsg: int;
+public preamble {=
+    #include <iostream>
+=}
 
-    state msg: int;
-    timer period (0, 1 sec);
+reactor Reciever {
 
-    logical action sendMsg(0);
-    
-    reaction(startup) -> sendMsg {=
-        sendMsg.schedule(0);
+    input msg1: int;
+    input msg2: int;
+    input msg3: int;
+    input msg4: int;
+    input msg5: int;
+
+    reaction(msg1) {=
+        std::cout << "Message Recieved on input 1" << std::endl;
     =}
-
-    reaction(period) -> sentMsg {=
-        sendMsg.schedule(0)
+    reaction(msg2) {=
+        std::cout << "Message Recieved on input 2" << std::endl;
     =}
-
-    reaction(sendMsg) {=
-        msg.set(1);
+    reaction(msg3) {=
+        std::cout << "Message Recieved on input 3" << std::endl;
+    =}
+    reaction(msg4) {=
+        std::cout << "Message Recieved on input 4" << std::endl;
+    =}
+    reaction(msg5) {=
+        std::cout << "Message Recieved on input 5" << std::endl;
     =}
 }
 
-main reactor{
-    node0 = new Node();
-    node1 = new Node();
+reactor Sender(id : int=0) {
+    output msg: int;
+    timer period(0, 1 sec);
 
-    node0.sentMsg -> node1.recievedMsg;
-    node1.sentMsg -> node0.recievedMsg;
+    reaction(period) -> msg{=
+        msg.set(1);
+        std::cout << "Message sent on sender: " << id << std::endl;
+    =}
+}
+
+main reactor {
+    sender1 = new Sender(id = 1);
+    sender2 = new Sender(id = 2);
+    sender3 = new Sender(id = 3);
+    sender4 = new Sender(id = 4);
+    sender5 = new Sender(id = 5);
+
+    reciever1 = new Reciever();
+
+    sender1.msg -> reciever1.msg1;
+    sender2.msg -> reciever1.msg2;
+    sender3.msg -> reciever1.msg3;
+    sender4.msg -> reciever1.msg4;
+    sender5.msg -> reciever1.msg5;
 }
