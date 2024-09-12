@@ -1,56 +1,29 @@
 target Cpp
 
-public preamble {=
+public preamble{=
     #include <iostream>
 =}
 
-reactor Reciever {
+reactor Node(id: int = 0) {
+    input recievedMsg: int;
+    output sentMsg: int;
 
-    input msg1: int;
-    input msg2: int;
-    input msg3: int;
-    input msg4: int;
-    input msg5: int;
+    timer period (0, 1 sec);
 
-    reaction(msg1) {=
-        std::cout << "Message Recieved on input 1" << std::endl;
+    reaction(period) -> sentMsg {=
+        sentMsg.set(1);
+        std::cout << "Message sent on Node: " << id << std::endl;
     =}
-    reaction(msg2) {=
-        std::cout << "Message Recieved on input 2" << std::endl;
-    =}
-    reaction(msg3) {=
-        std::cout << "Message Recieved on input 3" << std::endl;
-    =}
-    reaction(msg4) {=
-        std::cout << "Message Recieved on input 4" << std::endl;
-    =}
-    reaction(msg5) {=
-        std::cout << "Message Recieved on input 5" << std::endl;
+
+    reaction(recievedMsg) {=
+        std::cout << "Message recieved on Node: " << id << std::endl;
     =}
 }
 
-reactor Sender(id : int=0) {
-    output msg: int;
-    timer period(0, 1 sec);
+main reactor{
+    node0 = new Node(id = 1);
+    node1 = new Node(id = 2);
 
-    reaction(period) -> msg{=
-        msg.set(1);
-        std::cout << "Message sent on sender: " << id << std::endl;
-    =}
-}
-
-main reactor {
-    sender1 = new Sender(id = 1);
-    sender2 = new Sender(id = 2);
-    sender3 = new Sender(id = 3);
-    sender4 = new Sender(id = 4);
-    sender5 = new Sender(id = 5);
-
-    reciever1 = new Reciever();
-
-    sender1.msg -> reciever1.msg1;
-    sender2.msg -> reciever1.msg2;
-    sender3.msg -> reciever1.msg3;
-    sender4.msg -> reciever1.msg4;
-    sender5.msg -> reciever1.msg5;
+    node0.sentMsg -> node1.recievedMsg;
+    node1.sentMsg -> node0.recievedMsg;
 }
