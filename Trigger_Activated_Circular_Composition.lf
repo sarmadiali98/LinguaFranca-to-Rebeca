@@ -1,34 +1,39 @@
 target Cpp
 
-reactor Node(msg: int(0)) {
+public preamble{=
+    #include <iostream>
+=}
+
+reactor Node(id: int = 0, isfirst: bool = 0) {
+    input compdone: int;
     input recievedMsg: int;
     output sentMsg: int;
-
-    state msg: int;
-
-    logical action sendMsg(0);
     
-    reaction(startup) -> sendMsg {=
-        sendMsg.schedule(0);
+    reaction(startup) -> sentMsg {=
+        if(isfirst){
+            sentMsg.set(1);
+            std::cout<<"Message sent on first node" << std::endl;
+        }
     =}
 
-    reaction(sendMsg) {=
-        msg.set(1);
-    =}
-
-    reaction(recievedMsg) {=
-        sendMsg.schedule(0);
+    reaction(recievedMsg) -> sentMsg {=
+        sentMsg.set(1);
+        if(!isfirst){
+            std::cout << "Message recieved on node: " << id << std::endl;
+        } else {
+            std::cout << "Sequence is done" << std::endl;
+        }
     =}
 }
 
 main reactor{
-    node0 = new Node();
-    node1 = new Node();
-    node2 = new Node();
-    node3 = new Node();
+    node0 = new Node(id = 1, isfirst = true);
+    node1 = new Node(id = 2, isfirst = false);
+    node2 = new Node(id = 3, isfirst = false);
+    node3 = new Node(id = 4, isfirst = false);
 
     node0.sentMsg -> node1.recievedMsg;
     node1.sentMsg -> node2.recievedMsg;
     node2.sentMsg -> node3.recievedMsg;
-    node3.sentMsg -> node0.recievedMsg;
+    node3.sentMsg -> node0.recievedMsg after 0;
 }
