@@ -5,7 +5,6 @@ public preamble{=
 =}
 
 reactor Node(id: int = 0, isfirst: bool = 0) {
-    input compdone: int;
     input recievedMsg: int;
     output sentMsg: int;
     
