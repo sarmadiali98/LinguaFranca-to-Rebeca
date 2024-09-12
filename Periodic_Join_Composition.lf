@@ -1,5 +1,9 @@
 target Cpp
 
+public preamble {=
+    #include <iostream>
+=}
+
 reactor Reciever {
 
     input msg1: int;
@@ -8,38 +12,39 @@ reactor Reciever {
     input msg4: int;
     input msg5: int;
 
-    state rcvdmsg1: int;
-    state rcvdmsg2: int;
-    state rcvdmsg3: int;
-    state rcvdmsg4: int;
-    state rcvdmsg5: int;
-
-    reaction(msg1, msg2, msg3, msg4, msg5) {=
-        rcvdmsg1.set(msg1);
-        rcvdmsg2.set(msg2);
-        rcvdmsg3.set(msg3);
-        rcvdmsg4.set(msg4);
-        rcvdmsg5.set(msg5);
+    reaction(msg1) {=
+        std::cout << "Message Recieved on input 1" << std::endl;
+    =}
+    reaction(msg2) {=
+        std::cout << "Message Recieved on input 2" << std::endl;
+    =}
+    reaction(msg1) {=
+        std::cout << "Message Recieved on input 3" << std::endl;
+    =}
+    reaction(msg1) {=
+        std::cout << "Message Recieved on input 4" << std::endl;
+    =}
+    reaction(msg1) {=
+        std::cout << "Message Recieved on input 5" << std::endl;
     =}
 }
 
-reactor Sender {
+reactor Sender(id : int=0) {
     output msg: int;
     timer period(0, 1 sec);
 
-    logical action sendMsg(0);
-
-    reaction(period) {=
+    reaction(period) -> msg{=
         msg.set(1);
+        std::cout << "Message sent on sender: " << id << std::endl;
     =}
 }
 
 main reactor {
-    sender1 = new Sender();
-    sender2 = new Sender();
-    sender3 = new Sender();
-    sender4 = new Sender();
-    sender5 = new Sender();
+    sender1 = new Sender(id = 1);
+    sender2 = new Sender(id = 2);
+    sender3 = new Sender(id = 3);
+    sender4 = new Sender(id = 4);
+    sender5 = new Sender(id = 5);
 
     reciever1 = new Reciever();
 
