@@ -18,13 +18,13 @@ reactor Reciever {
     reaction(msg2) {=
         std::cout << "Message Recieved on input 2" << std::endl;
     =}
-    reaction(msg1) {=
+    reaction(msg3) {=
         std::cout << "Message Recieved on input 3" << std::endl;
     =}
-    reaction(msg1) {=
+    reaction(msg4) {=
         std::cout << "Message Recieved on input 4" << std::endl;
     =}
-    reaction(msg1) {=
+    reaction(msg5) {=
         std::cout << "Message Recieved on input 5" << std::endl;
     =}
 }
