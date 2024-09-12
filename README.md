@@ -8,7 +8,7 @@ Welcome to the Lingua Franca to Rebeca Verification Repository! This repository 
 ![Periodic_Sequential_Composition](https://github.com/user-attachments/assets/a3c72dd0-1059-40d0-9436-214834044a37)
 
 ## Periodic Circular Composition
-![Periodic_Circular_Composition](https://github.com/user-attachments/assets/40fbc054-e59a-4930-8b62-868834e0a020)
+![Trigger_Activated_Circular_Composition](https://github.com/user-attachments/assets/b4561e24-3eda-489c-b287-5170cdc987e1)
 
 ## Trigger Activated Circular Composition
 ![Trigger_Activated_Circular_Composition](https://github.com/user-attachments/assets/20460668-48cc-4309-98ab-c96111125980)
