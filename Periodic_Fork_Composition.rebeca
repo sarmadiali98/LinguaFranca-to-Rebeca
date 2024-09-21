@@ -1,0 +1,50 @@
+reactiveclass Sender(100) {
+    knownrebecs {
+    	Reciever recv0;
+        Reciever recv1;
+        Reciever recv2;
+        Reciever recv3;
+        Reciever recv4;
+    }
+
+    statevars {
+        int period;
+    }
+    	
+    Sender() {
+        period = 1;
+        self.sendMsg();
+    }
+    
+    msgsrv sendMsg() {
+
+        recv0.rcvMsg(1);
+        recv1.rcvMsg(1);
+        recv2.rcvMsg(1);
+        recv3.rcvMsg(1);
+        recv4.rcvMsg(1);
+        self.sendMsg() after(period);
+    }
+}
+
+reactiveclass Reciever(100) {
+	statevars{
+		int id;
+	}
+
+	Reciever(int myid){
+		id = myid;
+	}
+	
+	msgsrv rcvMsg(int msg) {}
+}
+
+main {
+	Reciever reciever1():(1);
+	Reciever reciever2():(2);
+	Reciever reciever3():(3);
+	Reciever reciever4():(4);
+	Reciever reciever5():(5);
+	
+    Sender sender1(reciever1, reciever2, reciever3, reciever4, reciever5):();
+}

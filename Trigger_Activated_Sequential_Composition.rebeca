@@ -1,0 +1,44 @@
+reactiveclass Node(100) {
+    knownrebecs {
+        Node next;
+    }
+
+    statevars {
+		boolean isfirst;
+		boolean islast;
+		int id;
+    }
+    	
+    Node(boolean isFirst, boolean isLast, int myid) {
+    	isfirst = isFirst;
+    	islast = isLast;
+    	
+    	id = myid;
+    	        
+        if(isfirst){
+        	self.sendMsg(1);
+        }
+    }
+    
+    msgsrv sendMsg(int msg) {
+        next.rcvMsg(msg);
+    }
+
+    msgsrv rcvMsg(int msg) {
+        
+        
+        if(islast) {
+        	self.sendMsg(1); //creating a livelock situation
+        }
+        else {
+        	self.sendMsg(1); //Pass the value to the next node.
+        }
+    }
+}
+
+main {
+    Node node0(node1):(true, false, 1);
+    Node node1(node2):(false, false, 2);
+    Node node2(node3):(false, false, 3);
+    Node node3(node3):(false, true, 4);
+}

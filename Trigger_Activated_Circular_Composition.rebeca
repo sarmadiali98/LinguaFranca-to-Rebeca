@@ -1,0 +1,30 @@
+reactiveclass Node(100) {
+    knownrebecs {
+        Node next;
+    }
+
+    statevars {
+        int id;
+    }
+    	
+    Node(int myid) {
+        self.sendMsg();
+        id = myid;
+    }
+    
+    msgsrv sendMsg() {
+        int msg;
+        next.rcvMsg(1);
+    }
+
+    msgsrv rcvMsg(int msg) {
+        self.sendMsg();
+    }
+}
+
+main {
+    Node node0(node1):(1);
+    Node node1(node2):(2);
+    Node node2(node3):(3);
+    Node node3(node0):(4);
+}

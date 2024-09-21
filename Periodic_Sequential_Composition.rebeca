@@ -1,0 +1,41 @@
+reactiveclass Node(10000) {
+    knownrebecs {
+        Node next;
+    }
+
+    statevars {
+        int period;
+		boolean isfirst;
+		boolean islast;
+		int id;
+    }
+    	
+    Node(boolean isFirst, boolean isLast, int myid) {
+    	isfirst = isFirst;
+    	islast = isLast;
+    	period = 1;        
+        
+        self.sendMsg(1);
+        
+    }
+    
+    msgsrv sendMsg(int msg) {
+    	if(isfirst){
+        	next.rcvMsg(1);
+        	self.sendMsg(1) after(period);
+        }
+    }
+
+    msgsrv rcvMsg(int msg) {
+        if(!islast){
+        	next.sendMsg(1);
+        }        
+    }
+}
+
+main {
+    Node node0(node1):(true, false, 1);
+    Node node1(node2):(false, false, 2);
+    Node node2(node3):(false, false, 3);
+    Node node3(node3):(false, true, 4);
+}
