@@ -1,0 +1,35 @@
+target Cpp
+reactor Node(id:int=0,
+            isfirst:bool=false,
+            islast:bool=false){
+  input recievedMsg: int;
+  output msg: int;
+  logical action sendMsg;
+  reaction(startup)->sendMsg {=
+    sendMsg.schedule(0ms);
+  =}
+  reaction(sendMsg)->msg {=
+    if(isfirst) {
+      msg.set(1);
+      reactor::log::Info()<<"Message sent on node:1";
+    }
+  =}
+  reaction(recievedMsg)->msg {=
+    if(islast) {
+      reactor::log::Info()<<"Sequence done";
+      msg.set(1);
+      } else {
+        msg.set(1);
+        reactor::log::Info()<<"Message sent on node:"<<id;
+      }
+  =}
+}
+main reactor {
+  node0=new Node(isfirst=true, islast=false, id=0);
+  node1=new Node(isfirst=false, islast=false, id=1);
+  node2=new Node(isfirst=false,islast=false,id=2);
+  node3 = new Node(isfirst=false,islast=true,id=3);
+  node0.msg->node1.recievedMsg;
+  node1.msg->node2.recievedMsg;
+  node2.msg->node3.recievedMsg;
+}

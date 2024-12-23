@@ -1,0 +1,21 @@
+target Cpp
+reactor Node(id: int = 0) {
+    input recievedMsg: int;
+    output msg: int;
+    reaction(startup) -> msg {=
+        if(id==0){
+            msg.set(1);
+        }
+        reactor::log::Info()<<"First message sent";
+    =}
+    reaction(recievedMsg) -> msg {=
+        msg.set(1);
+        reactor::log::Info() << "Message recieved on node: " << id;
+    =}
+}
+main reactor{
+    node0 = new Node(id = 0);
+    node1 = new Node(id = 1);
+    node0.msg -> node1.recievedMsg;
+    node1.msg -> node0.recievedMsg after 0;
+}
