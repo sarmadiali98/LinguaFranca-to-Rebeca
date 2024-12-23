@@ -1,0 +1,44 @@
+reactiveclass Sender(100) {
+    knownrebecs {
+        Medium medium3;
+        Medium medium4;
+    }
+    Sender() {
+        self.sendMsg(1);
+    }
+    msgsrv sendMsg(int msg) {
+        medium3.rcvMsg(msg);
+        medium4.rcvMsg(msg);
+        self.sendMsg(msg) after(1);
+    }
+}
+reactiveclass Medium(100) {
+    knownrebecs {
+        receiver receiver_;
+    }
+    statevars {
+        int id;
+    }
+    Medium(int _id) {
+        id = _id;
+    }
+    msgsrv rcvMsg(int msg) {
+        receiver_.rcvMsg(msg);
+    }
+}
+reactiveclass receiver(100) {
+    statevars {
+        int id;
+    }
+    receiver(int _id) {
+        id = _id;
+    }
+    msgsrv rcvMsg(int msg) {}
+}
+main {
+  receiver receiver1():(1);
+  receiver receiver2():(2);
+  Medium medium3(receiver1):(3);
+  Medium medium4(receiver2):(4);
+  Sender sender1(medium3,medium4):();
+}

@@ -1,0 +1,32 @@
+reactiveclass Receiver(100){
+    knownrebecs{
+        Switch switch_;
+    }
+    msgsrv rcvMsg(int msg){
+        self.rcvMsg(msg);
+    }
+}
+reactiveclass Switch(100){
+    knownrebecs{
+	Receiver receiver;
+    }
+    msgsrv rcvMsg(int msg){
+        receiver.rcvMsg(msg);
+    }
+}
+reactiveclass Sender(100){
+    knownrebecs{
+	Switch switch_;
+    }
+    Sender(){
+	self.sendMsg(0);
+    }
+    msgsrv sendMsg(int msg){
+	switch_.rcvMsg(msg);
+    }
+}
+main {
+    Receiver receiver(switch_):();
+    Switch switch_(receiver):();
+    Sender sender_(switch_):();
+}

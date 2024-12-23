@@ -1,0 +1,23 @@
+reactiveclass Node(100) {
+    Node() {
+        self.sendMsg1(1);
+        self.sendMsg2(1);
+        self.sendMsg3(1);
+        self.sendMsg4(1);
+    }
+    msgsrv sendMsg1(int msg){
+        self.sendMsg1(msg) after(1);
+    }
+    msgsrv sendMsg2(int msg){
+        self.sendMsg2(msg) after(1);
+    }
+    msgsrv sendMsg3(int msg){
+        self.sendMsg3(msg) after(1);
+    }
+    msgsrv sendMsg4(int msg){
+        self.sendMsg4(msg) after(1);
+    }
+}
+main {
+    Node node0():();
+}

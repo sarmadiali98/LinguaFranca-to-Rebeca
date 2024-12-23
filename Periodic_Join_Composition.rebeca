@@ -1,0 +1,30 @@
+reactiveclass receiver(100) {
+    knownrebecs {
+        Sender sender0;
+        Sender sender1;
+        Sender sender2;
+    }
+    msgsrv rcvMsg(int msg) {}
+}
+reactiveclass Sender(100) {
+    knownrebecs {
+        receiver receiver1;
+    }
+    statevars{
+        int id;
+    }
+    Sender(int _id){
+        id = _id;   
+        self.sendMsg(1);
+    }
+    msgsrv sendMsg(int msg) {
+        receiver1.rcvMsg(1);
+        self.sendMsg(msg) after(1);
+    }
+}
+main {
+  receiver receiver1(sender0,sender1,sender2):();
+  Sender sender0(receiver1):(0);
+  Sender sender1(receiver1):(1);
+  Sender sender2(receiver1):(2);
+}
