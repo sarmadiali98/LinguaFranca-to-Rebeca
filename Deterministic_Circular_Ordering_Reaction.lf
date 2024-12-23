@@ -1,0 +1,29 @@
+target Cpp
+reactor Node {
+  logical action sendMsg1;
+  logical action sendMsg2;
+  logical action sendMsg3;
+  logical action sendMsg4;
+  reaction(startup) -> sendMsg1 {=
+    sendMsg1.schedule(0ms);
+  =}
+  reaction(sendMsg1) -> sendMsg2{=
+    sendMsg2.schedule(0ms);
+    reactor::log::Info()<<"Message 1";
+  =}
+  reaction(sendMsg2) -> sendMsg3{=
+    sendMsg3.schedule(0ms);
+    reactor::log::Info()<<"Message 2";
+  =}
+  reaction(sendMsg3) -> sendMsg4{=
+    sendMsg4.schedule(0ms);
+    reactor::log::Info()<<"Message 3";
+  =}
+  reaction(sendMsg4) -> sendMsg1{=
+    sendMsg1.schedule(0ms);
+    reactor::log::Info()<<"Message 4";
+  =}
+}
+main reactor{
+  node0 = new Node();
+}

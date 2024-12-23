@@ -1,0 +1,23 @@
+target Cpp
+reactor Node(id: int = 0) {
+    input recievedMsg: int;
+    output msg: int;
+    logical action sendMsg;
+    reaction(startup) -> sendMsg {=
+        sendMsg.schedule(0ms);
+    =}
+    reaction(sendMsg) -> msg, sendMsg {=
+        msg.set(1);
+        reactor::log::Info() << "Message sent on Node: " << id;
+        sendMsg.schedule(1s);
+    =}
+    reaction(recievedMsg) {=
+        reactor::log::Info() << "Message recieved on Node: " << id;
+    =}
+}
+main reactor{
+    node0 = new Node(id = 0);
+    node1 = new Node(id = 1);
+    node0.msg -> node1.recievedMsg;
+    node1.msg -> node0.recievedMsg;
+}

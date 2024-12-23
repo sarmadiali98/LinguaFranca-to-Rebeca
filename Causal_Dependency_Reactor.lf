@@ -1,0 +1,34 @@
+target Cpp
+reactor Receiver {
+    input msg: int;
+    reaction(msg){=
+        reactor::log::Info()<<"Message Received in Receiver";
+    =}
+}
+reactor Switch {
+    input msg_input: int;
+    output msg_output: int;
+    reaction(msg_input)->msg_output{=
+        reactor::log::Info()<<"Message Received in Switch";
+        msg_output.set(0);
+        reactor::log::Info()<<"Message Sent to Receiver";
+    =}
+}
+reactor Sender {
+    output msg: int;
+    logical action sendMsg;
+    reaction(startup)->sendMsg{=
+        sendMsg.schedule(0ms);
+    =}
+    reaction(sendMsg) -> msg {=
+        reactor::log::Info()<<"Messeage Sent to Switch";
+        msg.set(0);
+    =}
+}
+main reactor {
+    receiver = new Receiver();
+    switch_ = new Switch();
+    sender = new Sender();
+    sender.msg->switch_.msg_input;
+    switch_.msg_output->receiver.msg;
+}

@@ -1,0 +1,31 @@
+target Cpp
+reactor Sender {
+    output msg: int;
+    logical action sendMsg;
+    reaction(startup) -> sendMsg{=
+        sendMsg.schedule(0ms);
+    =}
+    reaction(sendMsg)->msg,sendMsg{=
+        msg.set(1);
+        reactor::log::Info()<<"Message broadcasted";
+        sendMsg.schedule(1s);
+    =}
+}
+reactor receiver(id: int = 0) {
+    input rcvMsg: int;
+    state receivedMessage: int;
+    reaction(rcvMsg) {=
+      reactor::log::Info()<<"Message Recieved on receiver:"<<id;
+    =}
+}
+main reactor {
+    receiver0 = new receiver(id = 0);
+    receiver1 = new receiver(id = 1);
+    receiver2 = new receiver(id = 2);
+    receiver3 = new receiver(id = 3);
+    sender1 = new Sender();
+    sender1.msg -> receiver0.rcvMsg;
+    sender1.msg -> receiver1.rcvMsg;
+    sender1.msg -> receiver2.rcvMsg;
+    sender1.msg -> receiver3.rcvMsg;
+}
